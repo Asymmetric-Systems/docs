@@ -1,0 +1,77 @@
+---
+title: 'Adaption'
+description: 'Continually improve your agents with Adaption (Beta)'
+---
+
+<Warning>
+Adaption is currently in Beta and may not be stable. Users may also encounter slower outputs due to vLLM cold-start times.
+</Warning>
+
+Adaption lets you asynchronously finetune your models as they interact in the real world, ensuring your agents continually improve over time.
+
+Use `trigger_training()` to start a finetuning job on your collected memories. Then use `monitor_training()` to check the status of your job and look for `"lora_ready": true` in the response.
+
+## Trigger Training
+
+```python
+import requests
+
+def trigger_training():
+    response = requests.post(
+        "https://rkdune--symmetry.modal.run/adaption/train",
+        headers={"Authorization": "Bearer YOUR_ASYMMETRIC_API_KEY"},
+        json={
+            "memory_group": "darwin_agent",
+            "lora_name": "darwin_adapter",
+            "force": True
+        }
+    )
+    print(response.json())
+
+trigger_training()
+```
+
+## Monitor Training
+
+```python
+def monitor_training():
+    response = requests.get(
+        "https://rkdune--symmetry.modal.run/adaption/status",
+        headers={"Authorization": "Bearer YOUR_ASYMMETRIC_API_KEY"},
+        params={
+            "memory_group": "darwin_agent",
+            "lora_name": "darwin_adapter"
+        }
+    )
+    print(response.json())  # Look for "lora_ready": true
+
+monitor_training()
+```
+
+## Run Inference with Your Finetuned Adapter
+
+Once training is complete, use your finetuned adapter at inference time by setting `adaption_inference: True` and specifying your `lora_name`.
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://rkdune--symmetry.modal.run/v1/",
+    api_key="YOUR_ASYMMETRIC_API_KEY",
+)
+
+completion = client.chat.completions.create(
+    model="asymmetric/Qwen3-8B",  # use any model
+    messages=[{"role": "user", "content": "How old was Darwin when he set off on his voyages?"}],
+    stream=False,
+    extra_body={
+        "nightly": ["darwin_agent", "This agent helps collect historical record about Darwin's expeditions."],
+        "finetune_thresh": 1,
+        "min_finetune_group": 1,
+        "lora_name": "darwin_adapter",
+        "adaption_inference": True,
+    }
+)
+
+print(completion.choices[0].message.content)
+```

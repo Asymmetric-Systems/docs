@@ -1,0 +1,71 @@
+---
+title: 'Get Memories'
+description: 'Get all memories for a specific memory group'
+api: 'GET /nightly/memories'
+---
+
+## GET /nightly/memories
+
+Get all memories for a specific memory group. Returns memories with their IDs, content, and labels.
+
+### Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token from login. Format: `Bearer ACCESS_TOKEN`
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="group" type="string" required>
+  The memory group name to retrieve memories from
+</ParamField>
+
+### Response
+
+<ResponseField name="group" type="string">
+  The memory group name
+</ResponseField>
+
+<ResponseField name="memories" type="array">
+  Array of memory objects
+
+  <Expandable>
+    <ResponseField name="id" type="string">
+      Unique memory identifier (6-digit zero-padded)
+    </ResponseField>
+
+    <ResponseField name="content" type="string">
+      The memory text content
+    </ResponseField>
+
+    <ResponseField name="labels" type="array">
+      Array of label strings associated with this memory
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example
+
+```python
+import requests
+
+response = requests.get(
+    "https://rkdune--symmetry.modal.run/nightly/memories",
+    headers={"Authorization": f"Bearer {access_token}"},
+    params={"group": "my_math_agent"}
+)
+
+data = response.json()
+print(f"Memory Group: {data['group']}")
+for memory in data["memories"]:
+    print(f"[{memory['id']}] {memory['content']}")
+    print(f"  Labels: {', '.join(memory['labels'])}")
+```
+
+### Errors
+
+| Status | Description |
+|--------|-------------|
+| 400 | Missing required query parameter: group |
+| 401 | Invalid or missing authorization |
+| 404 | Account not found |

@@ -1,0 +1,66 @@
+---
+title: 'List LoRA Adapters'
+description: 'List all LoRA adapters owned by the authenticated user'
+api: 'GET /adaption/loras'
+---
+
+## GET /adaption/loras
+
+List all LoRA adapters owned by the authenticated user.
+
+### Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token with your API key. Format: `Bearer YOUR_ASYMMETRIC_API_KEY`
+</ParamField>
+
+### Response
+
+<ResponseField name="loras" type="array">
+  Array of LoRA adapter objects
+
+  <Expandable>
+    <ResponseField name="name" type="string">
+      LoRA adapter name
+    </ResponseField>
+
+    <ResponseField name="memory_group" type="string">
+      Associated memory group
+    </ResponseField>
+
+    <ResponseField name="version" type="integer">
+      Current version number
+    </ResponseField>
+
+    <ResponseField name="ready" type="boolean">
+      Whether the adapter is ready for inference
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      ISO 8601 timestamp
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example
+
+```python
+import requests
+
+response = requests.get(
+    "https://rkdune--symmetry.modal.run/adaption/loras",
+    headers={"Authorization": "Bearer YOUR_ASYMMETRIC_API_KEY"}
+)
+
+data = response.json()
+for lora in data["loras"]:
+    status = "Ready" if lora["ready"] else "Not ready"
+    print(f"{lora['name']} v{lora['version']}: {status}")
+```
+
+### Errors
+
+| Status | Description |
+|--------|-------------|
+| 401 | Invalid API key |
+| 500 | Failed to list LoRAs |

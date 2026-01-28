@@ -1,0 +1,74 @@
+---
+title: 'Get Training Status'
+description: 'Get adaption status for a memory group'
+api: 'GET /adaption/status'
+---
+
+## GET /adaption/status
+
+Get the training status for a LoRA adapter. Use this to monitor training progress and check if your adapter is ready for inference.
+
+### Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token with your API key. Format: `Bearer YOUR_ASYMMETRIC_API_KEY`
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="memory_group" type="string" required>
+  The memory group name
+</ParamField>
+
+<ParamField query="lora_name" type="string" required>
+  The LoRA adapter name
+</ParamField>
+
+### Response
+
+The response contains the current training status and metadata for the LoRA adapter.
+
+<ResponseField name="lora_ready" type="boolean">
+  Whether the LoRA adapter is ready for inference
+</ResponseField>
+
+<ResponseField name="training_status" type="string">
+  Current status: `idle`, `training`, `completed`, `failed`
+</ResponseField>
+
+<ResponseField name="active_version" type="integer">
+  The active LoRA version number
+</ResponseField>
+
+<ResponseField name="last_trained_at" type="string">
+  ISO 8601 timestamp of last training
+</ResponseField>
+
+### Example
+
+```python
+import requests
+
+response = requests.get(
+    "https://rkdune--symmetry.modal.run/adaption/status",
+    headers={"Authorization": "Bearer YOUR_ASYMMETRIC_API_KEY"},
+    params={
+        "memory_group": "darwin_agent",
+        "lora_name": "darwin_adapter"
+    }
+)
+
+data = response.json()
+if data.get("lora_ready"):
+    print("LoRA adapter is ready for inference!")
+else:
+    print(f"Training status: {data.get('training_status')}")
+```
+
+### Errors
+
+| Status | Description |
+|--------|-------------|
+| 400 | memory_group and lora_name query params required |
+| 401 | Invalid API key |
+| 500 | Failed to get status |

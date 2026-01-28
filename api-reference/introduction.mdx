@@ -1,33 +1,60 @@
 ---
 title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+description: 'Asymmetric API Reference'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Base URL
 
-## Welcome
+All API requests should be made to:
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
-
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+```
+https://rkdune--symmetry.modal.run
+```
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+Most API endpoints require authentication using a Bearer token. Include your API key in the Authorization header:
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
 ```
+Authorization: Bearer YOUR_ASYMMETRIC_API_KEY
+```
+
+You can get an API key from the [Dashboard](https://asymmetric.sh/billing).
+
+## OpenAI SDK Compatibility
+
+The `/v1/chat/completions` endpoint is compatible with the OpenAI SDK. Simply configure the client with our base URL:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://rkdune--symmetry.modal.run/v1/",
+    api_key="YOUR_ASYMMETRIC_API_KEY",
+)
+```
+
+## Features
+
+Asymmetric provides several features that extend standard chat completions:
+
+- **Nightly**: Give your agents persistent memory across interactions
+- **Policies**: Add custom guardrails to filter outputs in real-time
+- **Adaption**: Automatically finetune models based on agent interactions (Beta)
+
+## Rate Limits
+
+API requests are subject to rate limits based on your plan. Contact support if you need higher limits.
+
+## Errors
+
+The API uses standard HTTP response codes:
+
+| Code | Description |
+|------|-------------|
+| 200 | Success |
+| 400 | Bad Request - Invalid parameters |
+| 401 | Unauthorized - Invalid or missing API key |
+| 402 | Payment Required - Insufficient credits |
+| 404 | Not Found |
+| 500 | Internal Server Error |

@@ -1,0 +1,128 @@
+---
+title: 'Chat Completions'
+description: 'Create chat completions with optional memory, guardrails, and fine-tuning'
+api: 'POST /v1/chat/completions'
+---
+
+## POST /v1/chat/completions
+
+Route chat completion requests to OpenRouter with optional Nightly memory, Policies guardrails, and Adaption fine-tuning support. Compatible with the OpenAI SDK.
+
+### Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token with your API key. Format: `Bearer YOUR_ASYMMETRIC_API_KEY`
+</ParamField>
+
+### Request Body
+
+<ParamField body="model" type="string" required>
+  The model to use (e.g., `openai/gpt-4o-mini`, `anthropic/claude-3-sonnet`, etc.)
+</ParamField>
+
+<ParamField body="messages" type="array" required>
+  Array of message objects with `role` and `content` fields
+</ParamField>
+
+<ParamField body="stream" type="boolean" default="false">
+  Whether to stream the response
+</ParamField>
+
+<ParamField body="temperature" type="number">
+  Sampling temperature (0-2)
+</ParamField>
+
+<ParamField body="max_tokens" type="integer">
+  Maximum tokens to generate
+</ParamField>
+
+### Nightly (Memory) Parameters
+
+<ParamField body="nightly" type="array">
+  Enable agent memory. Format: `["memory_group", "user_goal"]`
+  - `memory_group`: Unique identifier for the memory pool
+  - `user_goal`: Description to help curate relevant memories
+</ParamField>
+
+### Policies (Guardrails) Parameters
+
+<ParamField body="guardrail_policy" type="string">
+  Natural language policy to check outputs against. If provided, outputs are filtered in real-time.
+</ParamField>
+
+<ParamField body="chunk_size" type="integer" default="10">
+  For streaming: how often to check guardrails (every N chunks)
+</ParamField>
+
+<ParamField body="sliding_window" type="integer" default="5">
+  For streaming: number of recent chunks to check together
+</ParamField>
+
+### Adaption (Fine-tuning) Parameters
+
+<ParamField body="finetune_thresh" type="integer">
+  Memory call count threshold to trigger training queue
+</ParamField>
+
+<ParamField body="min_finetune_group" type="integer" default="5">
+  Minimum memories needed before triggering training
+</ParamField>
+
+<ParamField body="lora_name" type="string">
+  Name of the LoRA adapter to use or create
+</ParamField>
+
+<ParamField body="adaption_inference" type="boolean" default="false">
+  Set to `true` to use your finetuned LoRA adapter for inference
+</ParamField>
+
+### Response
+
+Returns an OpenAI-compatible chat completion response.
+
+<ResponseField name="id" type="string">
+  Unique identifier for the completion
+</ResponseField>
+
+<ResponseField name="object" type="string">
+  Always `chat.completion`
+</ResponseField>
+
+<ResponseField name="choices" type="array">
+  Array of completion choices
+</ResponseField>
+
+<ResponseField name="usage" type="object">
+  Token usage statistics
+</ResponseField>
+
+### Example
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://rkdune--symmetry.modal.run/v1/",
+    api_key="YOUR_ASYMMETRIC_API_KEY",
+)
+
+# Basic completion with memory and guardrails
+completion = client.chat.completions.create(
+    model="openai/gpt-4o-mini",
+    messages=[{"role": "user", "content": "Hello!"}],
+    extra_body={
+        "nightly": ["my_agent", "A helpful assistant"],
+        "guardrail_policy": "Flag any inappropriate content"
+    }
+)
+
+print(completion.choices[0].message.content)
+```
+
+### Errors
+
+| Status | Description |
+|--------|-------------|
+| 400 | Guardrail violation detected or invalid parameters |
+| 401 | Invalid API key |
+| 402 | Insufficient credits |

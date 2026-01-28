@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Asymmetric",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -14,35 +14,11 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Examples",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "guides/nightly",
+              "guides/policies",
+              "guides/adaption"
             ]
           }
         ]
@@ -51,18 +27,30 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Chat Completions",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/chat-completions"
+            ]
+          },
+          {
+            "group": "Nightly (Memory)",
+            "pages": [
+              "api-reference/nightly/memory-groups",
+              "api-reference/nightly/memories"
+            ]
+          },
+          {
+            "group": "Adaption (Fine-tuning)",
+            "pages": [
+              "api-reference/adaption/train",
+              "api-reference/adaption/status",
+              "api-reference/adaption/loras"
             ]
           }
         ]
@@ -71,14 +59,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://asymmetric.sh",
+          "icon": "globe"
         }
       ]
     }
@@ -91,13 +74,13 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:rohan@asymmetric.sh"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://asymmetric.sh/billing"
     }
   },
   "contextual": {

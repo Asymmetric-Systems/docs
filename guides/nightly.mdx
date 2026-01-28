@@ -1,0 +1,27 @@
+---
+title: 'Nightly'
+description: 'Give your agents memory with Nightly'
+---
+
+Nightly lets your agents learn and improve over time by autonomously and asynchronously deciding what interactions are worth remembering, and then efficiently accessing those memories at inference time.
+
+The `memory_group` is a unique key for a persistent pool of memories (e.g., one per user or per agent type). The `user_goal` is a hint you can provide to help your agent better curate which interactions are worth saving as memories.
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://rkdune--symmetry.modal.run/v1/",
+    api_key="YOUR_ASYMMETRIC_API_KEY",  # get an API key from the dashboard
+)
+
+completion = client.chat.completions.create(
+    model="openai/gpt-4o-mini",  # use any model
+    messages=[{"role": "user", "content": "Explain the Sylow theorems."}],
+    stream=False,
+    extra_body={
+        "nightly": ["my_math_agent", "This agent helps prove theorems in abstract algebra."]
+        #            ^ memory_group      ^ user_goal
+    }
+)
+```
