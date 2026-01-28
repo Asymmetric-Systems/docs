@@ -1,0 +1,87 @@
+---
+title: 'Trigger Training'
+description: 'Trigger LoRA training for a memory group'
+api: 'POST /adaption/train'
+---
+
+## POST /adaption/train
+
+Trigger LoRA training for a memory group. This endpoint can be called automatically when the training threshold is met, or manually by the user.
+
+<Warning>
+Adaption is currently in Beta and may not be stable. Users may also encounter slower outputs due to vLLM cold-start times.
+</Warning>
+
+### Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token with your API key. Format: `Bearer YOUR_ASYMMETRIC_API_KEY`
+</ParamField>
+
+### Request Body
+
+<ParamField body="memory_group" type="string" required>
+  The memory group to train on
+</ParamField>
+
+<ParamField body="lora_name" type="string" required>
+  Name for the LoRA adapter
+</ParamField>
+
+<ParamField body="force" type="boolean" default="false">
+  Force override stale training locks
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Training status: `training_started`, `already_training`, or `no_data`
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Status message
+</ResponseField>
+
+<ResponseField name="lora_name" type="string">
+  Name of the LoRA adapter
+</ResponseField>
+
+<ResponseField name="version" type="integer">
+  Training version number
+</ResponseField>
+
+<ResponseField name="memories_count" type="integer">
+  Number of memories used for training
+</ResponseField>
+
+<ResponseField name="job_id" type="string">
+  Async job identifier
+</ResponseField>
+
+### Example
+
+```python
+import requests
+
+response = requests.post(
+    "https://rkdune--symmetry.modal.run/adaption/train",
+    headers={"Authorization": "Bearer YOUR_ASYMMETRIC_API_KEY"},
+    json={
+        "memory_group": "darwin_agent",
+        "lora_name": "darwin_adapter",
+        "force": True
+    }
+)
+
+data = response.json()
+print(f"Status: {data['status']}")
+print(f"Job ID: {data.get('job_id')}")
+```
+
+### Errors
+
+| Status | Description |
+|--------|-------------|
+| 400 | memory_group and lora_name are required |
+| 401 | Invalid API key |
+| 500 | Training failed |

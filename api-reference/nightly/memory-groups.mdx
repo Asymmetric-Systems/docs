@@ -1,0 +1,43 @@
+---
+title: 'List Memory Groups'
+description: 'List all memory groups for the authenticated user'
+api: 'GET /nightly/memory-groups'
+---
+
+## GET /nightly/memory-groups
+
+List all memory groups for the authenticated user. Memory groups are created automatically when you use the `nightly` parameter in chat completions.
+
+### Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token from login. Format: `Bearer ACCESS_TOKEN`
+</ParamField>
+
+### Response
+
+<ResponseField name="memory_groups" type="array">
+  Array of memory group names
+</ResponseField>
+
+### Example
+
+```python
+import requests
+
+response = requests.get(
+    "https://rkdune--symmetry.modal.run/nightly/memory-groups",
+    headers={"Authorization": f"Bearer {access_token}"}
+)
+
+data = response.json()
+for group in data["memory_groups"]:
+    print(f"Memory Group: {group}")
+```
+
+### Errors
+
+| Status | Description |
+|--------|-------------|
+| 401 | Invalid or missing authorization |
+| 404 | Account not found |
